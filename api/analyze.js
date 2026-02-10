@@ -3,7 +3,18 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { text } = req.body;
+  let body = "";
+
+  await new Promise((resolve, reject) => {
+    req.on("data", chunk => {
+      body += chunk;
+    });
+    req.on("end", resolve);
+    req.on("error", reject);
+  });
+
+  const parsed = JSON.parse(body);
+  const text = parsed.text || "";
 
   const prompt = `
 You are a legal analyst AI.
