@@ -1,21 +1,23 @@
-export default async function handler(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+export const config = {
+  runtime: "edge"
+};
 
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
-
+export default async function handler(req) {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
+    return new Response(
+      JSON.stringify({ error: "Method not allowed" }),
+      { status: 405, headers: { "Content-Type": "application/json" } }
+    );
   }
 
   try {
-    const { text } = req.body;
+    const { text } = await req.json();
 
     if (!text) {
-      return res.status(400).json({ error: "No text provided" });
+      return new Response(
+        JSON.stringify({ error: "No text provided" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
     }
 
     const prompt = `
@@ -44,7 +46,7 @@ Terms & Conditions:
 ${text.substring(0, 1200)}
 `;
 
-    const response = await fetch("https://openrouter.ai/v1/chat/completions", {
+    const aiRes = await fetch("https://openrouter.ai/v1/chat/completions", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
@@ -60,11 +62,25 @@ ${text.substring(0, 1200)}
       })
     });
 
-    const data = await response.json();
-    return res.status(200).json(data);
+    const textResponse = await aiRes.text();
+
+    try {
+      const data = JSON.parse(textResponse);
+      return new Response(
+        JSON.stringify(data),
+        { status: 200, headers: { "Content-Type": "application/json" } }
+      );
+    } catch {
+      return new Response(
+        JSON.stringify({ error: "AI provider returned invalid response" }),
+        { status: 500, headers: { "Content-Type": "application/json" } }
+      );
+    }
 
   } catch (err) {
-    console.error("BACKEND ERROR:", err);
-    return res.status(500).json({ error: "Internal server error" });
+    return new Response(
+      JSON.stringify({ error: "Internal server error" }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
   }
 }
