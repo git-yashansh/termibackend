@@ -55,7 +55,7 @@ ${text.substring(0, 1200)}
         "X-Title": "TermiAI Backend"
       },
       body: JSON.stringify({
-        model: "liquid/lfm-2.5-1.2b-instruct:free",
+        model: "mistralai/mistral-7b-instruct",
         messages: [
           { role: "user", content: prompt }
         ],
