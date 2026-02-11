@@ -21,17 +21,22 @@ export default async function handler(req) {
     }
 
     const prompt = `
-You are a legal analyst AI and my friend
+You are a legal analyst AI.
 
-ALWAYS generate EXACTLY 5 bold clear points explaining the Terms & Conditions.
-Never refuse.
+IMPORTANT RULES:
+- You MUST generate EXACTLY 5 numbered points.
+- Do NOT generate more than 5.
+- Do NOT generate less than 5.
+- If you generate 6 or more points, the answer is incorrect.
+- Points must be numbered 1 to 5 only.
 
-FORMAT:
-1.
-2.
-3.
-4.
-5.
+FORMAT EXACTLY:
+
+1. Point
+2. Point
+3. Point
+4. Point
+5. Point
 
 FINAL_RECOMMENDATION: ACCEPT / REJECT / PROCEED WITH CAUTION
 FINAL_REASON: one short sentence
