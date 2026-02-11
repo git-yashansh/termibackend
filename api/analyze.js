@@ -30,6 +30,12 @@ IMPORTANT RULES:
 - If you generate 6 or more points, the answer is incorrect.
 - Points must be numbered 1 to 5 only.
 
+IMPORTANT:
+Generate ONLY 5 numbered points.
+Do not generate more than 5.
+Stop after point 5.
+
+
 FORMAT EXACTLY:
 
 1. Point
@@ -57,7 +63,7 @@ ${text.substring(0, 800)}
           { role: "user", content: prompt }
         ],
         temperature: 0.4,
-        max_tokens: 500
+        max_tokens: 300
       })
     });
 
