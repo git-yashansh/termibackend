@@ -21,29 +21,23 @@ export default async function handler(req) {
     }
 
     const prompt = `
-You are a legal analyst AI.
+You are a legal analyst AI and my friend
 
-ALWAYS generate EXACTLY 10 clear points explaining the Terms & Conditions.
+ALWAYS generate EXACTLY 5 bold clear points explaining the Terms & Conditions.
 Never refuse.
 
 FORMAT:
-
 1.
 2.
 3.
 4.
 5.
-6.
-7.
-8.
-9.
-10.
 
 FINAL_RECOMMENDATION: ACCEPT / REJECT / PROCEED WITH CAUTION
 FINAL_REASON: one short sentence
 
 Terms & Conditions:
-${text.substring(0, 1200)}
+${text.substring(0, 800)}
 `;
 
     const aiRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
