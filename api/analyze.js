@@ -58,7 +58,7 @@ ${text.substring(0, 1200)}
           { role: "user", content: prompt }
         ],
         temperature: 0.4,
-        max_tokens: 700
+        max_tokens: 500
       })
     });
 
