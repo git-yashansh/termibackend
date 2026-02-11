@@ -46,16 +46,14 @@ Terms & Conditions:
 ${text.substring(0, 1200)}
 `;
 
-    const aiRes = await fetch("https://openrouter.ai/v1/chat/completions", {
+    const aiRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
-        "Content-Type": "application/json",
-        
-        "X-Title": "TermiAI Backend"
+        "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "mistralai/mistral-7b-instruct",
+        model: "llama3-8b-8192",
         messages: [
           { role: "user", content: prompt }
         ],
@@ -64,22 +62,19 @@ ${text.substring(0, 1200)}
       })
     });
 
-    const rawText = await aiRes.text();
+    const data = await aiRes.json();
 
-    try {
-      const data = JSON.parse(rawText);
-
+    if (!data.choices || !data.choices[0]?.message?.content) {
       return new Response(
-        JSON.stringify(data),
-        { status: 200, headers: { "Content-Type": "application/json" } }
-      );
-
-    } catch (parseError) {
-      return new Response(
-        JSON.stringify({ error: "Invalid AI response", details: rawText }),
+        JSON.stringify({ error: "Invalid AI response", details: data }),
         { status: 500, headers: { "Content-Type": "application/json" } }
       );
     }
+
+    return new Response(
+      JSON.stringify(data),
+      { status: 200, headers: { "Content-Type": "application/json" } }
+    );
 
   } catch (err) {
     return new Response(
